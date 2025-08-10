@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,7 +26,12 @@ export default async function Home() {
           </p>
           <div className="flex gap-4">
             {userId ? (
-              <></>
+              <>
+                <Link href={"/dashboard"}>
+                  <Button>View Dashboard</Button>
+                </Link>
+                <UserButton />
+              </>
             ) : (
               <>
                 <Link href={"/sign-up"}>
