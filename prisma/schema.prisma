@@ -60,6 +60,7 @@ model Patient {
   phone                    String
   email                    String
   address                  String
+  marital_status           String
   emergency_contact_name   String
   emergency_contact_number String
   relation                 String
