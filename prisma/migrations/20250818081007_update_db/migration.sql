@@ -1,19 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `insurance_id` on the `Patient` table. All the data in the column will be lost.
-  - You are about to drop the column `insurance_name` on the `Patient` table. All the data in the column will be lost.
-  - You are about to drop the column `phone_number` on the `Patient` table. All the data in the column will be lost.
-  - Added the required column `emergency_contact_name` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `emergency_contact_number` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `medical_consent` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `phone` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `privacy_consent` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `relation` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `service_consent` to the `Patient` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `updated_at` to the `Patient` table without a default value. This is not possible if the table is not empty.
-
-*/
 -- CreateEnum
 CREATE TYPE "public"."Role" AS ENUM ('ADMIN', 'NURSE', 'DOCTOR', 'LAB_TECHNICIAN', 'PATIENT', 'CASHIER');
 
@@ -35,27 +19,35 @@ CREATE TYPE "public"."PaymentMethod" AS ENUM ('CASH', 'CARD');
 -- CreateEnum
 CREATE TYPE "public"."PaymentStatus" AS ENUM ('PAID', 'UNPAID', 'PART');
 
--- AlterTable
-ALTER TABLE "public"."Patient" DROP COLUMN "insurance_id",
-DROP COLUMN "insurance_name",
-DROP COLUMN "phone_number",
-ADD COLUMN     "allergies" TEXT,
-ADD COLUMN     "blood_group" TEXT,
-ADD COLUMN     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "emergency_contact_name" TEXT NOT NULL,
-ADD COLUMN     "emergency_contact_number" TEXT NOT NULL,
-ADD COLUMN     "gender" "public"."Gender" NOT NULL DEFAULT 'MALE',
-ADD COLUMN     "img" TEXT,
-ADD COLUMN     "insurance_number" TEXT,
-ADD COLUMN     "medical_conditions" TEXT,
-ADD COLUMN     "medical_consent" BOOLEAN NOT NULL,
-ADD COLUMN     "medical_history" TEXT,
-ADD COLUMN     "phone" TEXT NOT NULL,
-ADD COLUMN     "privacy_consent" BOOLEAN NOT NULL,
-ADD COLUMN     "relation" TEXT NOT NULL,
-ADD COLUMN     "service_consent" BOOLEAN NOT NULL,
-ADD COLUMN     "updated_at" TIMESTAMP(3) NOT NULL,
-ALTER COLUMN "insurance_provider" DROP NOT NULL;
+-- CreateTable
+CREATE TABLE "public"."Patient" (
+    "id" TEXT NOT NULL,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "date_of_birth" TIMESTAMP(3) NOT NULL,
+    "gender" "public"."Gender" NOT NULL DEFAULT 'MALE',
+    "phone" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "address" TEXT NOT NULL,
+    "marital_status" TEXT NOT NULL,
+    "emergency_contact_name" TEXT NOT NULL,
+    "emergency_contact_number" TEXT NOT NULL,
+    "relation" TEXT NOT NULL,
+    "blood_group" TEXT,
+    "allergies" TEXT,
+    "medical_conditions" TEXT,
+    "medical_history" TEXT,
+    "insurance_provider" TEXT,
+    "insurance_number" TEXT,
+    "privacy_consent" BOOLEAN NOT NULL,
+    "service_consent" BOOLEAN NOT NULL,
+    "medical_consent" BOOLEAN NOT NULL,
+    "img" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Patient_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "public"."Doctor" (
@@ -263,6 +255,17 @@ CREATE TABLE "public"."Services" (
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "Services_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "public"."User" (
+    "id" TEXT NOT NULL,
+    "first_name" TEXT NOT NULL,
+    "last_name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password_hash" TEXT NOT NULL,
+
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

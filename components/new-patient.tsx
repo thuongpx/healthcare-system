@@ -17,7 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import { GENDER, MARITAL_STATUS, RELATION } from "@/lib";
 import { Button } from "./ui/button";
-import { createNewPatient } from "@/app/actions/patient";
+import { createNewPatient, updatePatient } from "@/app/actions/patient";
 import { toast } from "sonner";
 import { Form } from "./ui/form";
 
@@ -39,7 +39,7 @@ const NewPatient = ({ data, type }: DataProps) => {
     phone: user?.phoneNumbers?.toString() || "",
   };
 
-  const userId = user?.id
+  const userId = user?.id;
 
   const form = useForm<z.infer<typeof PatientFormSchema>>({
     resolver: zodResolver(PatientFormSchema) as any,
@@ -64,18 +64,21 @@ const NewPatient = ({ data, type }: DataProps) => {
   const onSubmit: SubmitHandler<z.infer<typeof PatientFormSchema>> = async (
     values
   ) => {
-    setLoading(true)
+    setLoading(true);
 
-    const res = type === "create" ? await createNewPatient(values, userId!) : null
-    setLoading(false)
+    const res =
+      type === "create"
+        ? await createNewPatient(values, userId!)
+        : await updatePatient(values, userId!);
+    setLoading(false);
 
-    if(res?.success) {
+    if (res?.success) {
       toast.success(res.msg);
-      form.reset()
-      router.push("/patient")
+      form.reset();
+      router.push("/patient");
     } else {
-      console.log(res)
-      toast.error("Failed to create patient")
+      console.log(res);
+      toast.error("Failed to create patient");
     }
   };
 
