@@ -18,6 +18,7 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 interface InputProps {
   type: "input" | "select" | "checkbox" | "switch" | "radio" | "textarea";
@@ -106,6 +107,17 @@ const RenderInput = ({ field, props }: { field: any; props: InputProps }) => {
           </RadioGroup>
         </div>
       );
+
+    case "textarea":
+      return (
+        <FormControl>
+          <Textarea
+            type={props.inputType}
+            placeholder={props.placeholder}
+            {...field}
+          ></Textarea>
+        </FormControl>
+      );
   }
 };
 const CustomInput = (props: InputProps) => {
@@ -115,7 +127,7 @@ const CustomInput = (props: InputProps) => {
     <FormField
       control={control}
       name={name}
-      render={({field}) => (
+      render={({ field }) => (
         <FormItem className="w-full">
           {type !== "radio" && type !== "checkbox" && (
             <FormLabel>{label}</FormLabel>

@@ -74,6 +74,7 @@ model Patient {
   service_consent          Boolean
   medical_consent          Boolean
   img                      String?
+  colorCode                String
 
   appointments Appointment[]
   medical      MedicalRecords[]
@@ -94,6 +95,7 @@ model Doctor {
   address             String
   department          String?
   img                 String?
+  colorCode           String
   availability_status String?
   type                JOBTYPE       @default(FULL)
   working_days        WorkingDays[]
