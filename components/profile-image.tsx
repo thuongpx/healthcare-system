@@ -8,11 +8,13 @@ const ProfileImage = ({
   name,
   className,
   textClassName,
+  bgcolor,
 }: {
   url: string;
   name: string;
   className?: string;
   textClassName?: string;
+  bgcolor?: string;
 }) => {
   if (url)
     return (
@@ -34,6 +36,7 @@ const ProfileImage = ({
           "flex md:hidden lg:flex w-10 h-10 rounded-full text-white text-base items-center justify-center font-light",
           className
         )}
+        style={{ backgroundColor: bgcolor || "#2563eb" }}
       >
         <p className={textClassName}>{getInitials(name)}</p>
       </div>
