@@ -1,5 +1,6 @@
 import db from "@/lib/db";
 import { Prisma } from "@prisma/client";
+import { includes, success } from "zod";
 
 export async function getAppointmentById(id: number) {
   try {
@@ -180,5 +181,48 @@ export async function getPatientAppointments({
       message: "International Server Error",
       status: 500,
     };
+  }
+}
+
+export async function getDoctorById(id: string) {
+  try {
+    const [doctor, totalAppointment] = await Promise.all([
+      db.doctor.findUnique({
+        where: { id },
+        include: {
+          working_days: true,
+          appointments: {
+            include: {
+              patient: {
+                select: {
+                  id: true,
+                  first_name: true,
+                  last_name: true,
+                  gender: true,
+                  img: true,
+                  colorCode: true,
+                },
+              },
+              doctor: {
+                select: {
+                  name: true,
+                  specialization: true,
+                  img: true,
+                  colorCode: true,
+                },
+              },
+            },
+            orderBy: { appointment_date: "desc" },
+            take: 10,
+          },
+        },
+      }),
+      db.appointment.count({
+        where: { doctor_id: id },
+      }),
+    ]);
+    return { data: doctor, totalAppointment };
+  } catch (error) {
+    return { success: false, message: "Internal Server Error", status: 500 };
   }
 }
