@@ -104,10 +104,60 @@ export async function getRatingById(id: string) {
     const sumRatings = data?.reduce((sum, el) => sum + el.rating, 0);
 
     const averageRating = totalRatings > 0 ? sumRatings / totalRatings : 0;
-    const formattedRatings = (Math.round(averageRating * 10) / 10).toFixed(1)
+    const formattedRatings = (Math.round(averageRating * 10) / 10).toFixed(1);
 
     return { totalRatings, averageRating: formattedRatings, ratings: data };
   } catch (error) {
     return { success: false, message: "Internal Server Error", status: 500 };
+  }
+}
+
+export async function getAllDoctors({
+  page,
+  search,
+  limit,
+}: {
+  page: number | string;
+  limit?: number | string;
+  search: string;
+}) {
+  try {
+    const PAGE_NUMBER = Number(page) <= 0 ? 1 : Number(page);
+    const LIMIT = Number(limit) || 10;
+
+    const SKIP = (PAGE_NUMBER - 1) * LIMIT;
+
+    const [doctors, totalRecords] = await Promise.all([
+      db.doctor.findMany({
+        where: {
+          OR: [
+            { name: { contains: search, mode: "insensitive" } },
+            { specialization: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+          ],
+        },
+        include: { working_days: true },
+        skip: SKIP,
+        take: LIMIT,
+      }),
+      db.doctor.count({}),
+    ]);
+
+    const totalPages = Math.ceil(totalRecords / LIMIT);
+
+    return {
+      success: true,
+      data: doctors,
+      totalRecords,
+      totalPages,
+      currentPage: PAGE_NUMBER,
+      status: 200,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "International Server Error",
+      status: 500,
+    };
   }
 }
