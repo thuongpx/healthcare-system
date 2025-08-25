@@ -13,12 +13,14 @@ import { Trash2 } from "lucide-react";
 import { FaQuestion } from "react-icons/fa";
 import { toast } from "sonner";
 import { deleteDataById } from "@/app/actions/general";
+import ProfileImage from "./profile-image";
+import SmallCard from "./small-card";
 
 interface ActionDialogProps {
   type: "doctor" | "staff" | "delete";
   data?: any;
   id: string;
-  deleteType: "doctor" | "staff" | "patient";
+  deleteType?: "doctor" | "staff" | "patient" | "payment";
 }
 
 const ActionDialog = ({ id, data, type, deleteType }: ActionDialogProps) => {
@@ -29,7 +31,7 @@ const ActionDialog = ({ id, data, type, deleteType }: ActionDialogProps) => {
     const handleDelete = async () => {
       try {
         setLoading(true);
-        const res = await deleteDataById(id, deleteType);
+        const res = await deleteDataById(id, deleteType!);
 
         if (res.success) {
           toast.success("Record deleted successfully");
@@ -81,6 +83,72 @@ const ActionDialog = ({ id, data, type, deleteType }: ActionDialogProps) => {
               >
                 Yes. Delete
               </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  if (type === "staff") {
+    return (
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button
+            variant={"outline"}
+            className="flex items-center justify-center rounded-full text-blue-600 hover:underline"
+          >
+            View
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-[300px] md:max-w-2xl max-h-[90%] p-8 overflow-y-auto">
+          <DialogTitle className="text-lg text-gray-600 font-semibold mb-4">
+            Staff Information
+          </DialogTitle>
+          <div className="flex justify-between">
+            <div className="flex gap-3 items-center">
+              <ProfileImage
+                url={data?.img!}
+                name={data?.name}
+                className="xl:size-20"
+                bgcolor={data?.colorCode!}
+                textClassName="xl:text-2xl"
+              />
+
+              <div className="flex flex-col">
+                <p className="text-xl font-semibold">{data?.name}</p>
+                <span className="text-gray-600 text-sm md:text-base capitalize">
+                  {data?.role?.toLowerCase()}
+                </span>
+                <span className="text-blue-500 text-sm">FullTime</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-10 space-y-6">
+            <div className="flex flex-col md:flex-row md:flex-wrap md:items-center xl:justify-between gap-y-4 md:gap-x-0">
+              {/* <SmallCard label="Full Name" value={data?.name} /> */}
+              <SmallCard
+                label="Email Address"
+                value={data?.email}
+                className="text-sm overflow-hidden"
+              />
+              <SmallCard label="Phone Number" value={data?.phone} />
+            </div>
+            <div>
+              <SmallCard label="Address" value={data?.address || "N/A"} />
+            </div>
+            <div className="flex flex-col md:flex-row md:flex-wrap md:items-center xl:justify-between gap-y-4 md:gap-x-0">
+              <SmallCard label="Role" value={data?.role} />
+              <SmallCard
+                label="Department"
+                value={data?.department || "N/A"}
+                className="text-sm overflow-hidden"
+              />
+              <SmallCard
+                label="License Number"
+                value={data?.license_number || "N/A"}
+              />
             </div>
           </div>
         </DialogContent>
