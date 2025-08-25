@@ -129,6 +129,7 @@ model Staff {
   department     String?
   img            String?
   license_number String?
+  colorCode      String?
 
   role   Role
   status Status @default(ACTIVE)
