@@ -137,7 +137,7 @@ const Appointments = async (props: {
               patientId={item?.patient_id}
               doctorId={item?.doctor_id}
               status={item?.status}
-              appointmentId={item.id}
+              appointmentId={Number(item.id)}
             />
           </div>
         </td>
@@ -157,7 +157,7 @@ const Appointments = async (props: {
         </div>
         <div className="w-full lg:w-fit flex items-center justify-between lg:justify-start gap-2">
           <SearchInput />
-          {isPatient && <AppointmentContainer id={userId} />}
+          {isPatient && <AppointmentContainer id={userId as string} />}
         </div>
       </div>
       <div className="mt-6">

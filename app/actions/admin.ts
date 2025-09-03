@@ -1,9 +1,10 @@
 "use server";
 
 import db from "@/lib/db";
-import { DoctorSchema, StaffSchema, workingDaySchema } from "@/lib/schema";
+import { DoctorSchema, ServicesSchema, StaffSchema, workingDaySchema } from "@/lib/schema";
 import { generateRandomColor } from "@/utils";
-import { clerkClient } from "@clerk/nextjs/server";
+import { checkRole } from "@/utils/roles";
+import { auth, clerkClient } from "@clerk/nextjs/server";
 
 export async function createNewDoctor(data: any) {
   try {
@@ -62,6 +63,18 @@ export async function createNewDoctor(data: any) {
 
 export async function createNewStaff(data: any) {
   try {
+    const { userId } = await auth();
+
+    if (!userId) {
+      return { success: false, msg: "Unauthorized" };
+    }
+
+    const isAdmin = await checkRole("ADMIN");
+
+    if (!isAdmin) {
+      return { success: false, msg: "Unauthorized" };
+    }
+
     const values = StaffSchema.safeParse(data);
 
     if (!values.success) {
@@ -97,7 +110,7 @@ export async function createNewStaff(data: any) {
         department: validatedValues.department,
         colorCode: generateRandomColor(),
         id: user.id,
-        status: "ACTIVE"
+        status: "ACTIVE",
       },
     });
 
@@ -109,5 +122,27 @@ export async function createNewStaff(data: any) {
   } catch (error) {
     console.log(error);
     return { error: true, success: false, message: "Something went wrong" };
+  }
+}
+
+
+export async function addNewService(data: any) {
+  try {
+    const isValidData = ServicesSchema.safeParse(data);
+
+    const validatedData = isValidData.data;
+
+    await db.services.create({
+      data: { ...validatedData!, price: Number(data.price!) },
+    });
+
+    return {
+      success: true,
+      error: false,
+      msg: `Service added successfully`,
+    };
+  } catch (error) {
+    console.log(error);
+    return { success: false, msg: "Internal Server Error" };
   }
 }

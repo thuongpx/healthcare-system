@@ -53,13 +53,17 @@ export const getVitalSignData = async (id: number) => {
   const averageValue1 = totalValue1 / count;
   const averageValue2 = totalValue2 / count;
 
-  const average = `${averageSystolic} / ${averageDiastolic} mg/dL`;
-  const averageHeartRate = `${averageValue1} - ${averageValue2} bpm`;
+  const average = `${averageSystolic.toFixed(2)} / ${averageDiastolic.toFixed(
+    2
+  )} mg/dL`;
+  const averageHeartRate = `${averageValue1.toFixed(
+    2
+  )} - ${averageValue2.toFixed(2)} bpm`;
 
   return {
     data: formatVitals,
     average,
     heartRateData: formattedData,
-    averageHeartRate
+    averageHeartRate,
   };
 };

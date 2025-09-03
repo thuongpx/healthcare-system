@@ -1,7 +1,13 @@
 import AppointmentContainer from "@/components/appointment-container";
+import AppointmentDetails from "@/components/appointment/appointment-details";
 import AppointmentQuickLinks from "@/components/appointment/appointment-quick-links";
+import BillsContainer from "@/components/appointment/bills-container";
 import ChartContainer from "@/components/appointment/chart-container";
+import DiagnosisContainer from "@/components/appointment/diagnosis-container";
 import PatientDetailsCard from "@/components/appointment/patient-details-card";
+import PaymentsContainer from "@/components/appointment/payment-container";
+import VitalSigns from "@/components/appointment/vital-signs";
+import { MedicalHistoryContainer } from "@/components/medical-history-container";
 import { getAppointmentWithMedicalRecordsById } from "@/utils/services/appointment";
 import React from "react";
 
@@ -24,13 +30,37 @@ const AppointmentDetailsPage = async ({
       {/* left */}
       <div className="w-full lg:w-[65%] flex flex-col gap-6">
         {cat === "charts" && <ChartContainer id={data?.patient_id} />}
-        {/* {cat === "appointments" && <> <AppointmentContainer />} </> */}
-      </div>
-      {/* {cat === "diagnosis" && <DiagnosisContainer />} */}
-      {/* {cat === "billing" && <BillingContainer />} */}
-      {/* {cat === "medical-history" && <MedicalHistoryContainer />} */}
-      {/* {cat === "payments" && <PaymentsContainer />} */}
+        {cat === "appointments" && (
+          <>
+            <AppointmentDetails
+              id={data?.patient_id}
+              patient_id={data?.patient_id}
+              appointment_date={data?.appointment_date}
+              time={data?.time}
+              notes={data?.notes!}
+            />
+            <VitalSigns
+              id={id}
+              patientId={data?.patient_id!}
+              doctorId={data?.doctor_id!}
+            />
+          </>
+        )}
 
+        {cat === "diagnosis" && (
+          <DiagnosisContainer
+            id={id}
+            patientId={data?.patient_id!}
+            doctorId={data?.doctorId!}
+          />
+        )}
+        
+        {cat === "medical-history" && (
+          <MedicalHistoryContainer id={id} patientId={data?.patient_id!} />
+        )}
+        {cat === "billing" && <BillsContainer id={id} />}
+        <PaymentsContainer patientId={data?.patient_id!} />
+      </div>
       {/* right */}
       <div className="flex-1 space-y-6">
         <AppointmentQuickLinks staffId={data?.doctor_id as string} />

@@ -56,7 +56,6 @@ export function calculateAge(dob: Date): string {
   return ageString + " old";
 }
 
-
 export const daysOfWeek = [
   "sunday",
   "monday",
@@ -95,7 +94,6 @@ export function generateTimes(
   return times;
 }
 
-
 export function generateRandomColor(): string {
   let hexColor = "";
   do {
@@ -107,4 +105,77 @@ export function generateRandomColor(): string {
     hexColor.toLowerCase() === "#000000"
   ); // Ensure it’s not white or black
   return hexColor;
+}
+
+export const calculateBMI = (weight: number, height: number) => {
+  const heightInMeters = height / 100;
+
+  const bmi = weight / (heightInMeters * heightInMeters);
+
+  let status: string;
+  let colorCode: string;
+
+  if (bmi < 18.5) {
+    status = "Underweight";
+    colorCode = "#1E90FF";
+  } else if (bmi >= 18.5 && bmi <= 24.9) {
+    status = "Normal";
+    colorCode = "#1E90FF";
+  } else if (bmi >= 25 && bmi <= 29.9) {
+    status = "Overweight";
+    colorCode = "#FF9800";
+  } else {
+    status = "Obesity";
+    colorCode = "#FF5722";
+  }
+
+  return {
+    bmi: parseFloat(bmi.toFixed(2)),
+    status,
+    colorCode,
+  };
+};
+
+type DiscountInput = {
+  amount: number;
+  discount?: number;
+  discountPercentage?: number;
+};
+
+export function calculateDiscount({
+  amount,
+  discount,
+  discountPercentage,
+}: DiscountInput): {
+  finalAmount: number;
+  discountPercentage?: number;
+  discountAmount?: number;
+} {
+  if (discount != null && discountPercentage != null) {
+    throw new Error(
+      "Provide either discount amount or discount percentage, not both."
+    );
+  }
+
+  if (discount != null) {
+    // Calculate discount percentage if a discount amount is provided
+    const discountPercent = (discount / amount) * 100;
+    return {
+      finalAmount: amount - discount,
+      discountPercentage: discountPercent,
+      discountAmount: discount,
+    };
+  } else if (discountPercentage != null) {
+    // Calculate discount amount if a discount percentage is provided
+    const discountAmount = (discountPercentage / 100) * amount;
+    return {
+      finalAmount: amount - discountAmount,
+      discountPercentage,
+      discountAmount,
+    };
+  } else {
+    throw new Error(
+      "Please provide either a discount amount or a discount percentage."
+    );
+  }
 }
